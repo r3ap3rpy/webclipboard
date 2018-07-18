@@ -1,7 +1,5 @@
 from flask import Flask, request, abort
-from functools import wraps
 from datetime import datetime, timedelta
-import sys 
 import hashlib
 
 app = Flask(__name__)
@@ -16,7 +14,7 @@ def get_content():
 	Calc = hashlib.sha512((str(request.authorization.username)+str(request.authorization.password)).encode('utf-8')).hexdigest()
 	if ResponseCache.get(Calc):
 		if datetime.strptime(ResponseCache[Calc]['Expiry'],"%Y-%m-%d %H:%M:%S.%f") < datetime.now():
-			abort(404, "Content has expired {} minutes ago!".format((datetime.now() - datetime.strptime(ResponseCache[Calc]['Expiry'],"%Y-%m-%d %H:%M:%S.%f")).seconds))
+			abort(404, "Content has expired {} seconds ago!".format((datetime.now() - datetime.strptime(ResponseCache[Calc]['Expiry'],"%Y-%m-%d %H:%M:%S.%f")).seconds))
 		else:
 			return str(ResponseCache[Calc]['Content'])
 	else:
@@ -37,7 +35,7 @@ def set_content():
 		delta = 60 * int(request.form.get('Expiry'))
 
 	ResponseCache.update({hashlib.sha512((str(request.form.get('User'))+str(request.form.get('Pwd'))).encode('utf-8')).hexdigest():{'Content':request.form['Content'],'Expiry':str(datetime.now() + timedelta(seconds=delta))}})
-	print(ResponseCache)
+
 	return "Success", 200
 	
 app.run(host='0.0.0.0', port=10000, debug=True)
