@@ -1,4 +1,4 @@
-### The webclipboard can be operated via the flask module!
+### The webclipboard can be operated via the flask module
 
 The basic idea is to be able to provide a clipboard outside the computer which can be used via a password and username combination!
 
